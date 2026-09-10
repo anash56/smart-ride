@@ -4,11 +4,11 @@ services:
     container_name: smart-ride-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: smart_ride
-      POSTGRES_PASSWORD: smart_ride_password
-      POSTGRES_DB: smart_ride
+      POSTGRES_USER: smart-ride
+      POSTGRES_PASSWORD: postgres1234
+      POSTGRES_DB: smart-ride
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
