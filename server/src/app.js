@@ -3,6 +3,8 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import authRoutes from "./routes/auth.routes.js";
 import addressRoutes from "./routes/address.routes.js";
+import routeRoutes from "./routes/route.routes.js";
+import routeStopRoutes from "./routes/routeStop.routes.js";
 const app = express();
 
 app.use(
@@ -17,6 +19,11 @@ app.use(cookieParser());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/addresses", addressRoutes);
+app.use("/api/routes",routeRoutes);
+app.use(
+  "/api/routes/:routeId/stops",
+  routeStopRoutes
+);
 
 app.get("/api/health", (req, res) => {
   res.json({
