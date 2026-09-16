@@ -5,6 +5,10 @@ import authRoutes from "./routes/auth.routes.js";
 import addressRoutes from "./routes/address.routes.js";
 import routeRoutes from "./routes/route.routes.js";
 import routeStopRoutes from "./routes/routeStop.routes.js";
+import scheduleRoutes from "./routes/schedule.routes.js";
+import driverRoutes from "./routes/driver.routes.js";
+import vehicleRoutes from "./routes/vehicle.routes.js";
+import routeAssignmentRoutes from "./routes/routeAssignment.routes.js";
 const app = express();
 
 app.use(
@@ -24,6 +28,15 @@ app.use(
   "/api/routes/:routeId/stops",
   routeStopRoutes
 );
+
+app.use(
+  "/api/routes/:routeId/schedules",
+  scheduleRoutes
+);
+
+app.use("/api/drivers", driverRoutes);
+app.use("/api/vehicles", vehicleRoutes);
+app.use("/api/route-assignments", routeAssignmentRoutes);
 
 app.get("/api/health", (req, res) => {
   res.json({
