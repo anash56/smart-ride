@@ -1,5 +1,36 @@
 import prisma from "../config/prisma.ts";
 
+const timeToMinutes = (time) => {
+  const [hours, minutes] = time.split(":").map(Number);
+  return hours * 60 + minutes;
+};
+
+const schedulesOverlap = (scheduleA, scheduleB) => {
+  const daysA = new Set(scheduleA.daysOfWeek.split(","));
+  const daysB = new Set(scheduleB.daysOfWeek.split(","));
+
+  const hasCommonDay = [...daysA].some((day) => daysB.has(day));
+
+  if (!hasCommonDay) {
+    return false;
+  }
+
+  const startA = timeToMinutes(scheduleA.startTime);
+  const endA = timeToMinutes(scheduleA.endTime);
+
+  const startB = timeToMinutes(scheduleB.startTime);
+  const endB = timeToMinutes(scheduleB.endTime);
+
+  return startA < endB && startB < endA;
+};
+
+const datesOverlap = (startA, endA, startB, endB) => {
+  const effectiveEndA = endA ?? new Date("9999-12-31");
+  const effectiveEndB = endB ?? new Date("9999-12-31");
+
+  return startA <= effectiveEndB && startB <= effectiveEndA;
+};
+
 export const createRouteAssignment = async ({
   driverId,
   vehicleId,
@@ -63,13 +94,68 @@ export const createRouteAssignment = async ({
   });
 
   if (!schedule) {
-    const error = new Error(
-      "Schedule not found for this route"
-    );
+    const error = new Error("Schedule not found for this route");
     error.statusCode = 404;
     throw error;
   }
 
+  const existingDriverAssignments = await prisma.routeAssignment.findMany({
+    where: {
+      driverId,
+      status: "ACTIVE",
+    },
+    include: {
+      schedule: true,
+    },
+  });
+
+  const driverConflict = existingDriverAssignments.some((assignment) => {
+    const dateConflict = datesOverlap(
+      startDate,
+      endDate,
+      assignment.startDate,
+      assignment.endDate,
+    );
+
+    const scheduleConflict = schedulesOverlap(schedule, assignment.schedule);
+
+    return dateConflict && scheduleConflict;
+  });
+
+  if (driverConflict) {
+    const error = new Error("Driver already has a conflicting assignment");
+    error.statusCode = 409;
+    throw error;
+  }
+
+  const existingVehicleAssignments = await prisma.routeAssignment.findMany({
+    where: {
+      vehicleId,
+      status: "ACTIVE",
+    },
+    include: {
+      schedule: true,
+    },
+  });
+
+  const vehicleConflict = existingVehicleAssignments.some((assignment) => {
+    const dateConflict = datesOverlap(
+      startDate,
+      endDate,
+      assignment.startDate,
+      assignment.endDate,
+    );
+
+    const scheduleConflict = schedulesOverlap(schedule, assignment.schedule);
+
+    return dateConflict && scheduleConflict;
+  });
+
+  if (vehicleConflict) {
+    const error = new Error("Vehicle already has a conflicting assignment");
+    error.statusCode = 409;
+    throw error;
+  }
   // 5. Create assignment
   return prisma.routeAssignment.create({
     data: {
@@ -118,16 +204,12 @@ export const getRouteAssignmentById = async (assignmentId) => {
   });
 };
 
-export const updateRouteAssignment = async (
-  assignmentId,
-  data
-) => {
-  const existingAssignment =
-    await prisma.routeAssignment.findUnique({
-      where: {
-        id: assignmentId,
-      },
-    });
+export const updateRouteAssignment = async (assignmentId, data) => {
+  const existingAssignment = await prisma.routeAssignment.findUnique({
+    where: {
+      id: assignmentId,
+    },
+  });
 
   if (!existingAssignment) {
     return null;
@@ -142,12 +224,11 @@ export const updateRouteAssignment = async (
 };
 
 export const deleteRouteAssignment = async (assignmentId) => {
-  const existingAssignment =
-    await prisma.routeAssignment.findUnique({
-      where: {
-        id: assignmentId,
-      },
-    });
+  const existingAssignment = await prisma.routeAssignment.findUnique({
+    where: {
+      id: assignmentId,
+    },
+  });
 
   if (!existingAssignment) {
     return null;
