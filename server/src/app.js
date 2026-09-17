@@ -9,6 +9,8 @@ import scheduleRoutes from "./routes/schedule.routes.js";
 import driverRoutes from "./routes/driver.routes.js";
 import vehicleRoutes from "./routes/vehicle.routes.js";
 import routeAssignmentRoutes from "./routes/routeAssignment.routes.js";
+import subscriptionPlanRoutes from "./routes/subscriptionPlan.routes.js";
+import subscriptionRoutes from "./routes/subscription.routes.js";
 const app = express();
 
 app.use(
@@ -37,6 +39,8 @@ app.use(
 app.use("/api/drivers", driverRoutes);
 app.use("/api/vehicles", vehicleRoutes);
 app.use("/api/route-assignments", routeAssignmentRoutes);
+app.use("/api/subscription-plans", subscriptionPlanRoutes);
+app.use("/api/subscriptions", subscriptionRoutes);
 
 app.get("/api/health", (req, res) => {
   res.json({
