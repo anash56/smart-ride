@@ -11,6 +11,7 @@ import vehicleRoutes from "./routes/vehicle.routes.js";
 import routeAssignmentRoutes from "./routes/routeAssignment.routes.js";
 import subscriptionPlanRoutes from "./routes/subscriptionPlan.routes.js";
 import subscriptionRoutes from "./routes/subscription.routes.js";
+import paymentRoutes from "./routes/payment.routes.js";
 const app = express();
 
 app.use(
@@ -41,6 +42,18 @@ app.use("/api/vehicles", vehicleRoutes);
 app.use("/api/route-assignments", routeAssignmentRoutes);
 app.use("/api/subscription-plans", subscriptionPlanRoutes);
 app.use("/api/subscriptions", subscriptionRoutes);
+app.use("/api/payments", paymentRoutes);
+
+app.use((error, req, res, next) => {
+  console.error(error);
+
+  const statusCode = error.statusCode || 500;
+
+  res.status(statusCode).json({
+    success: false,
+    message: error.message || "Internal server error",
+  });
+});
 
 app.get("/api/health", (req, res) => {
   res.json({
