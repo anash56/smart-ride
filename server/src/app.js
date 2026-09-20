@@ -12,6 +12,8 @@ import routeAssignmentRoutes from "./routes/routeAssignment.routes.js";
 import subscriptionPlanRoutes from "./routes/subscriptionPlan.routes.js";
 import subscriptionRoutes from "./routes/subscription.routes.js";
 import paymentRoutes from "./routes/payment.routes.js";
+import driverDashboardRoutes from "./routes/driverDashboard.routes.js";
+import attendanceRoutes from "./routes/attendance.routes.js";
 const app = express();
 
 app.use(
@@ -43,6 +45,9 @@ app.use("/api/route-assignments", routeAssignmentRoutes);
 app.use("/api/subscription-plans", subscriptionPlanRoutes);
 app.use("/api/subscriptions", subscriptionRoutes);
 app.use("/api/payments", paymentRoutes);
+app.use("/api/driver/dashboard", driverDashboardRoutes);
+app.use("/api/driver/attendance", attendanceRoutes);
+
 
 app.use((error, req, res, next) => {
   console.error(error);
