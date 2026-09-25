@@ -14,6 +14,10 @@ import subscriptionRoutes from "./routes/subscription.routes.js";
 import paymentRoutes from "./routes/payment.routes.js";
 import driverDashboardRoutes from "./routes/driverDashboard.routes.js";
 import attendanceRoutes from "./routes/attendance.routes.js";
+import adminDashboardRoutes from "./routes/adminDashboard.routes.js";
+import adminSubscriptionRoutes from "./routes/adminSubscription.routes.js";
+import adminAssignmentRoutes from "./routes/adminAssignment.routes.js";
+
 const app = express();
 
 app.use(
@@ -47,6 +51,21 @@ app.use("/api/subscriptions", subscriptionRoutes);
 app.use("/api/payments", paymentRoutes);
 app.use("/api/driver/dashboard", driverDashboardRoutes);
 app.use("/api/driver/attendance", attendanceRoutes);
+
+app.use(
+  "/api/admin/dashboard",
+  adminDashboardRoutes
+);
+
+app.use(
+  "/api/admin/subscriptions",
+  adminSubscriptionRoutes
+);
+
+app.use(
+  "/api/admin/assignments",
+  adminAssignmentRoutes
+);
 
 
 app.use((error, req, res, next) => {
