@@ -17,6 +17,8 @@ import attendanceRoutes from "./routes/attendance.routes.js";
 import adminDashboardRoutes from "./routes/adminDashboard.routes.js";
 import adminSubscriptionRoutes from "./routes/adminSubscription.routes.js";
 import adminAssignmentRoutes from "./routes/adminAssignment.routes.js";
+import adminDriverRoutes from "./routes/adminDriver.routes.js";
+import adminVehicleRoutes from "./routes/adminVehicle.routes.js";
 
 const app = express();
 
@@ -66,6 +68,9 @@ app.use(
   "/api/admin/assignments",
   adminAssignmentRoutes
 );
+
+app.use("/api/admin/drivers", adminDriverRoutes);
+app.use("/api/admin/vehicles", adminVehicleRoutes);
 
 
 app.use((error, req, res, next) => {
