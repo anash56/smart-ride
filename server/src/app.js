@@ -19,6 +19,7 @@ import adminSubscriptionRoutes from "./routes/adminSubscription.routes.js";
 import adminAssignmentRoutes from "./routes/adminAssignment.routes.js";
 import adminDriverRoutes from "./routes/adminDriver.routes.js";
 import adminVehicleRoutes from "./routes/adminVehicle.routes.js";
+import adminComplaintRoutes from "./routes/adminComplaint.routes.js";
 
 const app = express();
 
@@ -71,6 +72,7 @@ app.use(
 
 app.use("/api/admin/drivers", adminDriverRoutes);
 app.use("/api/admin/vehicles", adminVehicleRoutes);
+app.use("/api/admin/complaints", adminComplaintRoutes);
 
 
 app.use((error, req, res, next) => {
